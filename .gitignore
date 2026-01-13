@@ -1,0 +1,32 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Screenshots output
+screenshot_*.png
+screenshot_*.jpg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Config (optional - uncomment if you want to ignore local config)
+# config.json
