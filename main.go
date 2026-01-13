@@ -11,6 +11,7 @@ import (
 	"vucv/screenshot/capture"
 	"vucv/screenshot/clipboard"
 	"vucv/screenshot/config"
+	"vucv/screenshot/editor"
 	"vucv/screenshot/hotkey"
 	"vucv/screenshot/selector"
 )
@@ -25,6 +26,7 @@ func main() {
 	display := flag.Int("display", -1, "Capture specific display (0-indexed)")
 	region := flag.String("region", "", "Capture region: x,y,width,height")
 	selectRegion := flag.Bool("select", false, "Interactive region selection with mouse")
+	editMode := flag.Bool("edit", false, "Open editor after capture to add annotations")
 	output := flag.String("output", "", "Output directory")
 	format := flag.String("format", "png", "Output format: png or jpg")
 	quality := flag.Int("quality", 90, "JPEG quality (1-100)")
@@ -98,6 +100,15 @@ func main() {
 			os.Exit(1)
 		}
 
+		// Open editor if edit mode is enabled
+		if *editMode {
+			fmt.Println("Opening editor...")
+			editedImg, ok := editor.EditImageInteractive(result.Image)
+			if ok {
+				result.Image = editedImg
+			}
+		}
+
 	case *region != "":
 		var x, y, w, h int
 		_, err := fmt.Sscanf(*region, "%d,%d,%d,%d", &x, &y, &w, &h)
@@ -163,6 +174,7 @@ Options:
   -display N         Capture specific display (0-indexed)
   -region X,Y,W,H    Capture specific region
   -select            Interactive region selection with mouse drag
+  -edit              Open editor after capture to add text/annotations
   -output DIR        Output directory
   -format FORMAT     Output format: png (default) or jpg
   -quality N         JPEG quality 1-100 (default: 90)
@@ -183,6 +195,7 @@ Examples:
   screenshot -full                    # Capture all screens
   screenshot -display 0               # Capture primary monitor
   screenshot -region 100,100,800,600  # Capture region
+  screenshot -select -edit            # Select region and add annotations
   screenshot -delay 3s -full          # Capture after 3 seconds
   screenshot -daemon                  # Run with hotkeys`)
 }
